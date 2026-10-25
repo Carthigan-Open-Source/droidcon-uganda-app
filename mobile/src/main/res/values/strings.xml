@@ -239,7 +239,7 @@
     <string name="event_officehours_title" translation_description="Header label for general information on &quot;office hours and app reviews&quot;.">Office Hour Pods</string>
     <string name="event_fireside_title" translation_description="Header label for general information on &quot;after hours&quot;">Fireside chats</string>
     <string name="event_meals_title" translation_description="Header label for general information on &quot;meals&quot;">Meals</string>
-    <string name="dates_location_title" translation_description="Header label for general information on &quot;2019 Dates and location&quot;">2019 Dates and location</string>
+    <string name="dates_location_title" translation_description="Header label for general information on conference dates and location">2026 Dates and location</string>
     <string name="stay_informed_title" translation_description="Header label for general information on &quot;Stay informed&quot;">Stay informed</string>
     <string name="livestream_recordings_title" translation_description="Header label for general information on &quot;Livestream and recordings&quot;">Livestream and recordings</string>
     <string name="bike_title" translation_description="Header label for general information on &quot;Bike parking&quot;">Bike parking</string>
@@ -306,8 +306,8 @@
     <!-- Day labels for schedule -->
     <string name="day1" translation_description="Label for the first day of the conference">Day 1</string>
     <string name="day2" translation_description="Label for the second day of the conference">Day 2</string>
-    <string name="day1_date" translation_description="Actual date of the first day of the conference">Oct 23</string>
-    <string name="day2_date" translation_description="Actual date of the second day of the conference">Oct 24</string>
+    <string name="day1_date" translation_description="Actual date of the first day of the conference">Oct 28</string>
+    <string name="day2_date" translation_description="Actual date of the second day of the conference">Oct 29</string>
 
     <!-- Speaker -->
     <string name="speaker_link_website" translation_description="The label for a link to a speaker's Website">Website</string>
