@@ -22,7 +22,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.google.samples.apps.iosched.ui.MainActivity">
+        tools:context="com.carthigan.droidconuganda.ui.MainActivity">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/navigation"
@@ -34,7 +34,7 @@
             app:labelVisibilityMode="labeled"
             app:menu="@menu/navigation" />
 
-        <com.google.samples.apps.iosched.widget.FadingSnackbar
+        <com.carthigan.droidconuganda.widget.FadingSnackbar
             android:id="@+id/snackbar"
             android:layout_width="@dimen/snackbar_width"
             android:layout_height="wrap_content"

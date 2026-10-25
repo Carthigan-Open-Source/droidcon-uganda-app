@@ -15,36 +15,39 @@
  */
 
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'io.fabric'
+// AGP 9 built-in Kotlin replaces kotlin-android. kotlin-android-extensions was
+// removed from the Kotlin plugin (synthetic view access migrated to
+// findViewById in SearchFragment). Room and Dagger run on KSP.
+apply plugin: 'com.google.devtools.ksp'
+// DataBinding still needs kapt-style processing: under built-in Kotlin the
+// DataBinding processor running on javac cannot see Kotlin @BindingAdapters
+// (https://issuetracker.google.com/issues/542651953). legacy-kapt runs the
+// DataBinding compiler where Kotlin adapters are visible.
+apply plugin: 'com.android.legacy-kapt'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 
 android {
-    compileSdkVersion rootProject.compileSdkVersion
+    namespace 'com.carthigan.droidconuganda'
+    compileSdk rootProject.compileSdkVersion
     defaultConfig {
-        applicationId "com.google.samples.apps.adssched"
-        minSdkVersion rootProject.minSdkVersion
-        targetSdkVersion rootProject.targetSdkVersion
+        applicationId "com.carthigan.droidconuganda"
+        minSdk rootProject.minSdkVersion
+        targetSdk rootProject.targetSdkVersion
         versionName rootProject.versionName
         versionCode rootProject.versionCodeMobile
-        testInstrumentationRunner "com.google.samples.apps.iosched.tests.CustomTestRunner"
+        testInstrumentationRunner "com.carthigan.droidconuganda.tests.CustomTestRunner"
 
         vectorDrawables.useSupportLibrary true
-
-        manifestPlaceholders = [crashlyticsEnabled: true]
     }
 
     buildTypes {
         release {
             minifyEnabled true
             shrinkResources true
-            manifestPlaceholders = [crashlyticsEnabled: true]
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // AGP 9 only supports the optimized default ProGuard file.
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
-            manifestPlaceholders = [crashlyticsEnabled: false]
         }
         staging {
             initWith debug
@@ -56,18 +59,14 @@ android {
             matchingFallbacks = ['debug']
         }
     }
-    dataBinding {
-        enabled true
+    buildFeatures {
+        dataBinding true
+        // MainApplication reads BuildConfig.DEBUG (off by default since AGP 8)
+        buildConfig true
     }
-    kapt {
-        javacOptions {
-            // Increase the max count of errors from annotation processors.
-            // Default is 100.
-            option("-Xmaxerrs", 2000)
-        }
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     signingConfigs {
@@ -82,12 +81,12 @@ android {
 
     // debug and release variants share the same source dir
     sourceSets {
-        debug.java.srcDir 'src/debugRelease/java'
-        release.java.srcDir 'src/debugRelease/java'
+        debug.kotlin.srcDir 'src/debugRelease/java'
+        release.kotlin.srcDir 'src/debugRelease/java'
     }
 
-    lintOptions {
-        disable "InvalidPackage", "MissingTranslation"
+    lint {
+        disable 'InvalidPackage', 'MissingTranslation'
     }
 
     testBuildType "staging"
@@ -104,7 +103,7 @@ dependencies {
     implementation "androidx.browser:browser:$rootProject.browserVersion"
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
     implementation "com.google.android.material:material:$rootProject.materialVersion"
-    implementation "com.google.android:flexbox:$rootProject.flexboxVersion"
+    implementation "com.google.android.flexbox:flexbox:$rootProject.flexboxVersion"
 
     implementation "androidx.core:core-ktx:$rootProject.coreVersion"
 
@@ -114,27 +113,24 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycleVersion"
     implementation "androidx.fragment:fragment-ktx:$rootProject.fragmentVersion"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$rootProject.lifecycleVersion"
-    kapt "androidx.lifecycle:lifecycle-compiler:$rootProject.lifecycleVersion"
     implementation "androidx.room:room-ktx:$rootProject.roomVersion"
     implementation "androidx.room:room-runtime:$rootProject.roomVersion"
-    kapt "androidx.room:room-compiler:$rootProject.roomVersion"
-    implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
-    implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
+    ksp "androidx.room:room-compiler:$rootProject.roomVersion"
+    implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.navigationVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$rootProject.navigationVersion"
     testImplementation "androidx.arch.core:core-testing:$rootProject.archCoreTestingVersion"
 
     // Dagger
     implementation "com.google.dagger:dagger-android:$rootProject.dagger"
     implementation "com.google.dagger:dagger-android-support:$rootProject.dagger"
-    kapt "com.google.dagger:dagger-compiler:$rootProject.dagger"
-    kapt "com.google.dagger:dagger-android-processor:$rootProject.dagger"
+    ksp "com.google.dagger:dagger-compiler:$rootProject.dagger"
+    ksp "com.google.dagger:dagger-android-processor:$rootProject.dagger"
 
-    // Glide
+    // Glide (no annotation processor: the app has no @GlideModule)
     implementation "com.github.bumptech.glide:glide:$rootProject.glideVersion"
-    kapt "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
 
-    // Fabric and Firebase
-    implementation "com.firebaseui:firebase-ui-auth:$rootProject.firebaseUiVersion"
-    implementation "com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion"
+    // Firebase was removed: the app has no account system. Local starred
+    // sessions are stored on-device (see LocalUserEventDataSource).
 
     // Date and time API for Java.
     api "com.jakewharton.threetenabp:threetenabp:$rootProject.threetenabpVersion"
@@ -151,8 +147,8 @@ dependencies {
     androidTestImplementation "androidx.test:runner:$rootProject.runnerVersion"
     androidTestImplementation "androidx.test:rules:$rootProject.rulesVersion"
     stagingImplementation "androidx.fragment:fragment-testing:$rootProject.fragmentVersion"
-    kaptAndroidTest "com.google.dagger:dagger-compiler:$rootProject.dagger"
-    kaptAndroidTest "com.google.dagger:dagger-android-processor:$rootProject.dagger"
+    kspAndroidTest "com.google.dagger:dagger-compiler:$rootProject.dagger"
+    kspAndroidTest "com.google.dagger:dagger-android-processor:$rootProject.dagger"
 
     // Local unit tests
     testImplementation "junit:junit:$rootProject.junitVersion"
@@ -162,7 +158,5 @@ dependencies {
     testImplementation "org.hamcrest:hamcrest-library:$rootProject.hamcrestVersion"
 
     // Solve conflicts with gson. DataBinding is using an old version.
-    implementation "com.google.code.gson:gson:$gsonVersion"
+    implementation "com.google.code.gson:gson:$rootProject.gsonVersion"
 }
-
-apply plugin: 'com.google.gms.google-services'

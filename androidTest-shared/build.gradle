@@ -15,13 +15,14 @@
  */
 
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+// AGP 9 built-in Kotlin replaces kotlin-android.
 
 android {
-    compileSdkVersion rootProject.compileSdkVersion
+    namespace 'com.carthigan.droidconuganda.androidtest.util'
+    compileSdk rootProject.compileSdkVersion
     defaultConfig {
-        minSdkVersion rootProject.minSdkVersion
-        targetSdkVersion rootProject.targetSdkVersion
+        minSdk rootProject.minSdkVersion
+        targetSdk rootProject.targetSdkVersion
         versionCode 1
         versionName "1.0"
 

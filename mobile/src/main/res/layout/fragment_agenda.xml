@@ -23,10 +23,10 @@
 
         <variable
             name="viewModel"
-            type="com.google.samples.apps.iosched.ui.agenda.AgendaViewModel" />
+            type="com.carthigan.droidconuganda.ui.agenda.AgendaViewModel" />
     </data>
 
-    <com.google.samples.apps.iosched.widget.InsetDispatchingCoordinatorLayout
+    <com.carthigan.droidconuganda.widget.InsetDispatchingCoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
@@ -61,6 +61,6 @@
             app:timeZoneId="@{viewModel.timeZoneId}"
             tools:ignore="UnusedAttribute" />
 
-    </com.google.samples.apps.iosched.widget.InsetDispatchingCoordinatorLayout>
+    </com.carthigan.droidconuganda.widget.InsetDispatchingCoordinatorLayout>
 
 </layout>

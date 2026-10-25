@@ -27,6 +27,9 @@
 
     <color name="color_primary">@color/android_blue</color>
     <color name="color_primary_dark">@color/android_navy</color>
+    <!-- Aliased so drawables can reference the theme color directly -->
+    <color name="colorPrimary">@color/color_primary</color>
+    <color name="colorPrimaryDark">@color/color_primary_dark</color>
     <color name="color_on_secondary">#fff</color>
 
     <color name="info_event_card_logo_background">@color/android_blue_light</color>

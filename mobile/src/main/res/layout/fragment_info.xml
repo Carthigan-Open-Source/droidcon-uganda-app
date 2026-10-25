@@ -18,7 +18,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.google.samples.apps.iosched.widget.InsetDispatchingCoordinatorLayout
+    <com.carthigan.droidconuganda.widget.InsetDispatchingCoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
@@ -52,13 +52,13 @@
             app:pageMargin="@{@dimen/spacing_normal}"
             app:pageMarginDrawable="@{@drawable/page_margin}" />
 
-        <com.google.samples.apps.iosched.widget.FadingSnackbar
+        <com.carthigan.droidconuganda.widget.FadingSnackbar
             android:id="@+id/snackbar"
             android:layout_width="@dimen/snackbar_width"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
             android:visibility="gone" />
 
-    </com.google.samples.apps.iosched.widget.InsetDispatchingCoordinatorLayout>
+    </com.carthigan.droidconuganda.widget.InsetDispatchingCoordinatorLayout>
 
 </layout>

@@ -15,7 +15,7 @@
  */
 
 apply plugin: 'java-library'
-apply plugin: "kotlin"
+apply plugin: 'org.jetbrains.kotlin.jvm'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -26,5 +26,13 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$rootProject.kotlinVersion"
 }
 
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8
+    }
+}

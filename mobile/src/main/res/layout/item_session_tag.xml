@@ -24,7 +24,7 @@
 
         <variable
             name="tag"
-            type="com.google.samples.apps.iosched.model.Tag" />
+            type="com.carthigan.droidconuganda.model.Tag" />
     </data>
 
     <TextView

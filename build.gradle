@@ -18,120 +18,101 @@
 // sub-projects/modules.
 
 buildscript {
-    ext {
-        // App version
-        versionName = '2.0.5' // X.Y.Z; X = Major, Y = minor, Z = Patch level
-        versionCodeBase = 20500 // XYZZM; M = Module (tv, mobile)
-        versionCodeTv = versionCodeBase + 2 // Not used at the moment
-        versionCodeMobile = versionCodeBase + 3 // Leave some space for future-proofing
-
-        // SDK and tools
-        compileSdkVersion = 29
-        minSdkVersion = 21
-        targetSdkVersion = 29
-
-        // App dependencies
-        aiaVersion = '1.1.0'
-        archCoreTestingVersion = '2.1.0-rc01'
-        androidGradlePluginVersion = '3.5.0'
-        appcompatVersion = '1.1.0-rc01'
-        browserVersion = '1.0.0-beta01'
-        constraintLayoutVersion = '1.1.2'
-        coreVersion = '1.2.0-alpha04'
-        coroutinesVersion = '1.3.0'
-        crashlyticsVersion = '2.9.4'
-        dagger = "2.24"
-        dataBindingCompilerVersion = '3.0.1'
-        espressoVersion = '3.1.0-alpha1'
-        fabricVersion = '1.25.4'
-        firebaseAuthVersion = '16.0.4'
-        firebaseConfigVersion = '16.0.1'
-        firebaseCoreVersion = '16.0.4'
-        firebaseFirestoreVersion = '17.1.1'
-        firebaseMessagingVersion = '17.3.3'
-        firebaseUiVersion = "3.3.1"
-        flexboxVersion = "0.3.2"
-        fragmentVersion = "1.1.0-rc04"
-        glideVersion = "4.9.0"
-        googleServicesVersion = "3.2.0"
-        gsonVersion = "2.8.1"
-        hamcrestVersion = '1.3'
-        junitVersion = '4.12'
-        kotlinVersion = '1.3.41'
-        ktlintVersion = '0.33.0'
-        ktxVersion = "1.0.0"
-        legacySupportVersion = '1.0.0-alpha1'
-        lifecycleVersion = '2.2.0-alpha03'
-        materialVersion = '1.1.0-alpha09'
-        mockitoVersion = "2.8.9"
-        mockitoKotlinVersion = "1.5.0"
-        navigationVersion = "2.1.0-rc01"
-        okhttpVersion = "3.10.0"
-        okioVersion = '1.14.0'
-        roomVersion = '2.2.0-rc01'
-        rulesVersion = '1.1.1'
-        runnerVersion = '1.1.1'
-        testExtVersion = '1.1.0'
-        threetenabpVersion = "1.0.5"
-        threetenbpVersion = "1.3.6"
-        timberVersion = "4.7.1"
-        workVersion = "2.2.0"
-    }
-
     repositories {
         google()
         mavenCentral()
-        jcenter()
-        maven {
-            url 'https://maven.fabric.io/public'
-        }
-        // Android Build Server
-        maven { url '../adssched-prebuilts/m2repository' }
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:$androidGradlePluginVersion"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath "com.google.gms:google-services:$googleServicesVersion"
-        classpath "io.fabric.tools:gradle:$fabricVersion"
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigationVersion"
+        // AGP 9.4.1 requires Gradle 9.6.0 (see gradle/wrapper) and JDK 17+.
+        // It transitively provides the Kotlin Gradle plugin (KGP 2.2.10+),
+        // so no separate kotlin-gradle-plugin classpath entry is needed.
+        classpath "com.android.tools.build:gradle:9.4.1"
+        // Hosts the com.android.legacy-kapt plugin implementation, needed for
+        // DataBinding processing under built-in Kotlin.
+        classpath "com.android.tools.build:gradle-kotlin:9.4.1"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.10.2"
+        // KSP 2.3.12: versions >= 2.3.6 are required for AGP 9's built-in
+        // Kotlin (older KSP registers generated sources via the now
+        // disallowed kotlin.sourceSets DSL).
+        classpath "com.google.devtools.ksp:symbol-processing-gradle-plugin:2.3.12"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
 plugins {
-    id "com.diffplug.gradle.spotless" version "3.24.0"
+    // Applies to the root project only; the ** globs below format the
+    // Kotlin sources of every module from here.
+    id "com.diffplug.spotless" version "8.9.0"
+}
+
+// Version constants shared with modules via $rootProject.<name>
+ext {
+    // App version
+    versionName = '2.0.5' // X.Y.Z; X = Major, Y = minor, Z = Patch level
+    versionCodeBase = 20500 // XYZZM; M = Module (tv, mobile)
+    versionCodeTv = versionCodeBase + 2 // Not used at the moment
+    versionCodeMobile = versionCodeBase + 3 // Leave some space for future-proofing
+
+    // SDK and tools
+    compileSdkVersion = 36
+    // 24: required by Navigation 2.10 / Room 2.8 (Android 7.0+, 2016)
+    minSdkVersion = 24
+    targetSdkVersion = 29
+
+    // App dependencies. The 2019-era library versions are intentionally kept
+    // so the existing sources keep compiling; only the versions the AGP 9
+    // toolchain requires were bumped.
+    aiaVersion = '1.1.0'
+    archCoreTestingVersion = '2.1.0-rc01'
+    appcompatVersion = '1.1.0-rc01'
+    browserVersion = '1.0.0-beta01'
+    constraintLayoutVersion = '1.1.2'
+    coreVersion = '1.2.0-alpha04'
+    coroutinesVersion = '1.11.0'
+    dagger = "2.60.1"
+    espressoVersion = '3.1.0-alpha1'
+    // Bumped from 0.3.2: the old com.google.android:flexbox coordinate only
+    // existed on Google's internal prebuilts maven. 3.0.0 is public and keeps
+    // the same com.google.android.flexbox package (no source changes).
+    flexboxVersion = "3.0.0"
+    fragmentVersion = '1.1.0-rc04'
+    glideVersion = "4.16.0"
+    gsonVersion = "2.8.1"
+    hamcrestVersion = '1.3'
+    junitVersion = '4.12'
+    kotlinVersion = '2.2.10'
+    ktxVersion = "1.0.0"
+    lifecycleVersion = '2.2.0-alpha03'
+    materialVersion = '1.1.0-alpha09'
+    mockitoVersion = "2.8.9"
+    mockitoKotlinVersion = "1.5.0"
+    // Bumped from 2.1.0-rc01: the safe-args Gradle plugin must be compatible
+    // with Gradle 9.6 and match the navigation runtime.
+    navigationVersion = "2.10.2"
+    okhttpVersion = "3.10.0"
+    okioVersion = '1.14.0'
+    roomVersion = '2.8.5'
+    rulesVersion = '1.1.1'
+    runnerVersion = '1.1.1'
+    testExtVersion = '1.1.0'
+    threetenabpVersion = "1.0.5"
+    threetenbpVersion = "1.3.6"
+    timberVersion = "4.7.1"
+    workVersion = "2.2.0"
 }
 
 allprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()
-
-        // For Android Build Server
-        // - Material Design Components
-        maven { url "${rootProject.projectDir}/../iosched-prebuilts/repository" }
-        // - Other dependencies
-        maven { url "${rootProject.projectDir}/../iosched-prebuilts/m2repository" }
-        // - Support Libraries, etc
-        maven {
-            url "${rootProject.projectDir}/../../../prebuilts/fullsdk/linux/extras/support/m2repository"
-        }
     }
+}
 
-    apply plugin: 'com.diffplug.gradle.spotless'
-    spotless {
-        kotlin {
-            target "**/*.kt"
-            targetExclude ".idea/"
-            ktlint(ktlintVersion)
-        }
-    }
-
-    afterEvaluate {
-        extensions.findByName("kapt")?.arguments {
-            arg("room.incremental", "true")
-        }
+spotless {
+    kotlin {
+        target "**/*.kt"
+        targetExclude "**/build/**", ".idea/**"
+        ktlint()
     }
 }

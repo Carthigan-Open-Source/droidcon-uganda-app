@@ -23,14 +23,14 @@
 
         <variable
             name="eventFilter"
-            type="com.google.samples.apps.iosched.ui.schedule.filters.EventFilter" />
+            type="com.carthigan.droidconuganda.ui.schedule.filters.EventFilter" />
 
         <variable
             name="viewModel"
-            type="com.google.samples.apps.iosched.ui.schedule.ScheduleViewModel" />
+            type="com.carthigan.droidconuganda.ui.schedule.ScheduleViewModel" />
     </data>
 
-    <com.google.samples.apps.iosched.ui.schedule.filters.EventFilterView
+    <com.carthigan.droidconuganda.ui.schedule.filters.EventFilterView
         android:id="@+id/filter_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -24,7 +24,7 @@
 
         <variable
             name="viewModel"
-            type="com.google.samples.apps.iosched.ui.sessiondetail.SessionDetailViewModel" />
+            type="com.carthigan.droidconuganda.ui.sessiondetail.SessionDetailViewModel" />
 
         <variable
             name="tagViewPool"

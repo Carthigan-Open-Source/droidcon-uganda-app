@@ -18,7 +18,6 @@
 <!-- ATTENTION: Needs to duplicate entire manifest to instant due to manifest merging issues. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="com.google.samples.apps.iosched"
     android:targetSandboxVersion="2">
     <!-- targetSandBoxVersion="2" is a requirement for instant apps. -->
 
@@ -87,14 +86,6 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-
-        <meta-data
-            android:name="firebase_crashlytics_collection_enabled"
-            android:value="${crashlyticsEnabled}" />
 
         <!-- https://developers.google.com/maps/documentation/android-sdk/config#specify_requirement_for_apache_http_legacy_library -->
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>

@@ -23,14 +23,14 @@
     <data>
         <variable
             name="headshotLoadListener"
-            type="com.google.samples.apps.iosched.ui.speaker.ImageLoadListener" />
+            type="com.carthigan.droidconuganda.ui.speaker.ImageLoadListener" />
 
         <variable
             name="viewModel"
-            type="com.google.samples.apps.iosched.ui.speaker.SpeakerViewModel" />
+            type="com.carthigan.droidconuganda.ui.speaker.SpeakerViewModel" />
     </data>
 
-    <com.google.samples.apps.iosched.widget.InsetDispatchingCoordinatorLayout
+    <com.carthigan.droidconuganda.widget.InsetDispatchingCoordinatorLayout
         android:id="@+id/coordinator_layout_session_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -145,13 +145,13 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layoutManager="LinearLayoutManager" />
 
-        <com.google.samples.apps.iosched.widget.FadingSnackbar
+        <com.carthigan.droidconuganda.widget.FadingSnackbar
             android:id="@+id/snackbar"
             android:layout_width="@dimen/snackbar_width"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
             android:visibility="gone" />
 
-    </com.google.samples.apps.iosched.widget.InsetDispatchingCoordinatorLayout>
+    </com.carthigan.droidconuganda.widget.InsetDispatchingCoordinatorLayout>
 
 </layout>

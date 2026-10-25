@@ -15,15 +15,16 @@
  */
 
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
+// AGP 9 built-in Kotlin replaces kotlin-android (and the removed
+// kotlin-android-extensions). Annotation processors (Room, Dagger) run on KSP.
+apply plugin: 'com.google.devtools.ksp'
 
 android {
-    compileSdkVersion rootProject.compileSdkVersion
+    namespace 'com.carthigan.droidconuganda.shared'
+    compileSdk rootProject.compileSdkVersion
     defaultConfig {
-        minSdkVersion rootProject.minSdkVersion
-        targetSdkVersion rootProject.targetSdkVersion
+        minSdk rootProject.minSdkVersion
+        targetSdk rootProject.targetSdkVersion
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -47,13 +48,19 @@ android {
         consumerProguardFiles 'consumer-proguard-rules.pro'
     }
 
+    buildFeatures {
+        // Required for the buildConfigField declarations below (off by
+        // default since AGP 8).
+        buildConfig true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
-            buildConfigField "String", "CONFERENCE_DATA_URL", "\"https://storage.googleapis.com/adssched-prod.appspot.com/conference_data_2019.json\""
+            buildConfigField "String", "CONFERENCE_DATA_URL", "\"https://raw.githubusercontent.com/Carthigan-Open-Source/droidcon-uganda-data/main/data/2026/conference_data_2026.json\""
         }
         debug {
-            buildConfigField "String", "CONFERENCE_DATA_URL", "\"https://storage.googleapis.com/adssched.appspot.com/conference_data_2019.json\""
+            buildConfigField "String", "CONFERENCE_DATA_URL", "\"https://raw.githubusercontent.com/Carthigan-Open-Source/droidcon-uganda-data/main/data/2026/conference_data_2026.json\""
         }
         staging {
             initWith debug
@@ -66,18 +73,19 @@ android {
         }
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    lintOptions {
+    lint {
         disable 'InvalidPackage'
     }
 
     // debug and release variants share the same source dir
     sourceSets {
-        debug.java.srcDir 'src/debugRelease/java'
-        release.java.srcDir 'src/debugRelease/java'
+        debug.kotlin.srcDir 'src/debugRelease/java'
+        release.kotlin.srcDir 'src/debugRelease/java'
     }
 }
 
@@ -93,10 +101,10 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel:$rootProject.lifecycleVersion"
     implementation "androidx.room:room-ktx:$rootProject.roomVersion"
     implementation "androidx.room:room-runtime:$rootProject.roomVersion"
-    kapt "androidx.room:room-compiler:$rootProject.roomVersion"
-    implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
-    implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
-    api("androidx.work:work-runtime-ktx:$workVersion") {
+    ksp "androidx.room:room-compiler:$rootProject.roomVersion"
+    implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.navigationVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$rootProject.navigationVersion"
+    api("androidx.work:work-runtime-ktx:$rootProject.workVersion") {
         // WorkManager uses its own version of listenablefuture extracted from guava.
         // This is required to avoid conflicts.
         exclude group: 'com.google.guava', module: 'listenablefuture'
@@ -124,15 +132,13 @@ dependencies {
     // Dagger
     implementation "com.google.dagger:dagger-android:$rootProject.dagger"
     implementation "com.google.dagger:dagger-android-support:$rootProject.dagger"
-    kapt "com.google.dagger:dagger-compiler:$rootProject.dagger"
-    kapt "com.google.dagger:dagger-android-processor:$rootProject.dagger"
+    ksp "com.google.dagger:dagger-compiler:$rootProject.dagger"
+    ksp "com.google.dagger:dagger-android-processor:$rootProject.dagger"
 
     // Firebase
-    api "com.google.firebase:firebase-auth:$rootProject.firebaseAuthVersion"
-    api "com.google.firebase:firebase-config:$rootProject.firebaseConfigVersion"
-    api "com.google.firebase:firebase-core:$rootProject.firebaseCoreVersion"
-    api "com.google.firebase:firebase-firestore:$rootProject.firebaseFirestoreVersion"
-    api "com.google.firebase:firebase-messaging:$rootProject.firebaseMessagingVersion"
+    // Firebase was removed: the app has no account system and no cloud
+    // services. Conference data is downloaded from a plain HTTPS URL
+    // (CONFERENCE_DATA_URL in shared/build.gradle).
     // Has to be replaced to avoid compile / runtime conflicts between okhttp and firestore
     api "com.squareup.okio:okio:$rootProject.okioVersion"
 

@@ -24,10 +24,10 @@
 
         <variable
             name="viewModel"
-            type="com.google.samples.apps.iosched.ui.search.SearchViewModel" />
+            type="com.carthigan.droidconuganda.ui.search.SearchViewModel" />
     </data>
 
-    <com.google.samples.apps.iosched.widget.InsetDispatchingCoordinatorLayout
+    <com.carthigan.droidconuganda.widget.InsetDispatchingCoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
@@ -90,6 +90,6 @@
             tools:targetApi="o"
             tools:visibility="visible" />
 
-    </com.google.samples.apps.iosched.widget.InsetDispatchingCoordinatorLayout>
+    </com.carthigan.droidconuganda.widget.InsetDispatchingCoordinatorLayout>
 
 </layout>

@@ -120,7 +120,7 @@
     <string name="swap" translation_description="The label of the button to swap the reservation with another.">Swap</string>
 
     <!-- Notifications preference dialog -->
-    <string name="notifications_preference_dialog_title" translation_description="The title of the dialog for the notifications preference">Android Dev Summit Notifications</string>
+    <string name="notifications_preference_dialog_title" translation_description="The title of the dialog for the notifications preference">Droidcon Uganda Notifications</string>
     <string name="notifications_preference_dialog_content" translation_description="The content of the dialog for the notifications preference">Would you like to be notified when your starred events are about to start? You can change this setting under \"Info > Settings\" at any time.</string>
     <string name="notifications_preference_dialog_content_instant" translation_description="The content of the dialog for the notifications preference to show if the user is using the Instant App">If you would like to be notified when your starred events are about to start, you will need to install the app.</string>
     <string name="no" translation_description="Negative answer to the question \'Would you like to receive notification?\'">No</string>
@@ -138,16 +138,16 @@
 
     <!--Strings for sharing session-->
     <string name="menu_item_share_session" translation_description="The label for the button to share this session on SNS, etc.">Share session</string>
-    <string name="share_text_session_detail" translation_description="The default message to be used when user is sharing an Android Dev Summit session on SNS, etc.">Check out \'%1$s\' at #ads2019 %2$s</string>
+    <string name="share_text_session_detail" translation_description="The default message to be used when user is sharing a Droidcon Uganda session on SNS, etc.">Check out \'%1$s\' at #dcug26 %2$s</string>
     <string name="intent_chooser_session_detail" translation_description="The label for share screen where user can tell people about an Android Dev Summit session on SNS, etc.">Share</string>
 
     <!-- Onboarding -->
     <string name="onboarding_get_started" translation_description="The label for the button to start using the app.">Get started</string>
-    <string name="onboarding_welcome_to_conference" translation_description="The welcome message shown at the onboarding screen of the app.">Welcome to the\nAndroid Dev Summit</string>
-    <string name="onboarding_date_location" translation_description="The date and the place of Android Dev Summit 2019.">October 23–24, 2019\nSunnyvale, CA</string>
+    <string name="onboarding_welcome_to_conference" translation_description="The welcome message shown at the onboarding screen of the app.">Welcome to\nDroidcon Uganda</string>
+    <string name="onboarding_date_location" translation_description="The date and the place of Droidcon Uganda 2026.">October 28–29, 2026\nKampala, Uganda</string>
     <string name="onboarding_build_schedule" translation_description="The explanation title of the feature where user can choose which sessions to attend.">Build your own schedule</string>
-    <string name="onboarding_build_sched_benefits" translation_description="The explanation of the feature where user can choose which sessions to attend.">Build your custom Android Dev Summit experience</string>
-    <string name="onboarding_watch_live" translation_description="The explanation title of the feature where user can watch the Android Dev Summit sessions by live stream.">Watch Android Dev Summit Live</string>
+    <string name="onboarding_build_sched_benefits" translation_description="The explanation of the feature where user can choose which sessions to attend.">Build your custom Droidcon Uganda experience</string>
+    <string name="onboarding_watch_live" translation_description="The explanation title of the feature where user can watch the Droidcon Uganda sessions by live stream.">Watch Droidcon Uganda Live</string>
     <string name="onboarding_join_online" translation_description="The explanation of the feature where user can watch Android Dev Summit sessions by live stream.">Join us online. We\'ll be streaming the keynotes and most sessions live.</string>
     <string name="onboarding_label_days" translation_description="The label for the display of the number of days until the conference starts">D</string>
     <string name="onboarding_label_hours" translation_description="The label for the display of the number of hours until the conference starts">H</string>
@@ -169,7 +169,7 @@
     <string name="settings_title" translation_description="Title for the tab that shows all the settings of this app.">Settings</string>
     <string name="about_title" translation_description="Title for the 'About' tab that shows miscellaneous info.">About</string>
 
-    <string name="faq_url" translatable="false">https://developer.android.com/dev-summit/faq/</string>
+    <string name="faq_url" translatable="false">https://uganda.droidcon.com/</string>
     <string name="tos_url" translatable="false">https://policies.google.com/terms</string>
     <string name="privacy_policy_url" translatable="false">https://policies.google.com/privacy</string>
     <string name="oss_file" translatable="false">file:///android_asset/licenses.html</string>
@@ -187,10 +187,10 @@
     <p>All presentations will be in English. Attendance at sessions and product demos is on a first-come, first-served basis.</p>
     ]]></string>
     <string name="badges_description" translation_description="Badges instructions"><![CDATA[
-    <p>The two-day event kicks off on Wednesday, 23 October with badge pick-up and breakfast starting
-    at 8:00 AM and the keynote address at 10:00 AM. We recommend arriving at the Google
-    Event Center (MP7) in time to register, enjoy the complimentary breakfast, and get
-    comfortable before the keynote starts at 10:00 AM.</p>
+    <p>The two-day event kicks off on Wednesday, 28 October with registration and badge pick-up
+    starting at 8:00 AM and the first session at 10:05 AM. We recommend arriving at the National
+    ICT Innovation Hub in time to register, enjoy the complimentary breakfast, and get
+    comfortable before the first session starts at 10:05 AM.</p>
 
     <p>Make sure to bring your photo ID along with your registration confirmation email,
     as we’ll need to verify it prior to assigning your badge for this event. We’re
@@ -205,9 +205,10 @@
     Badges may include your name and company or organization (if provided).</p>
     ]]></string>
     <string name="accessibility_description"><![CDATA[
-    <p>Google strives to make events open and accessible to everyone, regardless of disability or
-      special needs. Participants with disabilities and/or special needs should provide details in
-      the registration form and/or by emailing us at android-dev-summit@google.com. This information
+    <p>Droidcon Uganda strives to make the event open and accessible to everyone, regardless of
+      disability or special needs. Participants with disabilities and/or special needs should provide
+      details in the registration form and/or by contacting the organizers through the event website
+      at uganda.droidcon.com. This information
       will be kept private and will be distributed only to the individuals who need to know it to
       complete accommodation requests. Otherwise, please approach the help desk at the event venue
       if you need assistance or have questions about accessibility during the event.</p>
@@ -215,7 +216,8 @@
     <string name="youth_attendance_description"><![CDATA[
     <p>Attendees must be at least 15 years old to attend unaccompanied.
       All attendees under 18 years of age must return a signed parental/guardian consent form in
-      advance of the event. Please contact android-dev-summit@google.com to obtain and submit a
+      advance of the event. Please contact the event organizers through the event website at
+      uganda.droidcon.com to obtain and submit a
       consent form prior to attending the event.
       </p>
     ]]></string>
@@ -257,32 +259,26 @@
     <string name="event_meals_description" translation_description="General information on meals.">Attendees are offered complimentary breakfast, lunch, and snacks on the days of the conference.</string>
 
     <string name="dates_location_description"><![CDATA[
-    <p>Android Dev Summit 2019 will be held October 23–24, 2019, at the <a href="https://goo.gl/maps/uPCQBxtJasR3hzjn9">Google Event Center (MP7), 1160 Bordeaux Dr, Sunnyvale, CA 94089</a>.
+    <p>Droidcon Uganda 2026 will be held October 28–29, 2026, at the <a href="https://maps.app.goo.gl/wLGMw7RDYveeXZZa7">National ICT Innovation Hub, Kampala, Uganda</a>.
     </p>]]></string>
     <string name="stay_informed_description"><![CDATA[
-    <p>For the latest information about sessions, speakers, and activities, visit the <a href="https://developer.android.com/dev-summit/faq">Android Dev Summit website</a>,
-    follow us on <a href="https://twitter.com/AndroidDev">Twitter</a>, or
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdgYq8FgW9eGyaUqIF7VFkPpvRPTcvjg4meeBOMAe_cGYPywA/viewform">sign up</a> for event updates.
-    You can also follow and join the social conversation about the event via the official <a href="https://twitter.com/hashtag/androiddevsummit">#AndroidDevSummit</a> hashtag.
+    <p>For the latest information about sessions, speakers, and activities, join and follow the social conversation about the event via the official <a href="https://twitter.com/hashtag/DroidconUganda">#DroidconUganda</a> hashtag.
     In addition, we will email important information to all accepted applicants, along with check-in instructions prior to the event.</p>
     ]]></string>
     <string name="livestream_recordings_description"><![CDATA[
     <p>If you cannot attend this event in person, then watch the livestream of the
-      keynote and all sessions on the app or on the Android Dev Summit 2019
-      <a href="https://developer.android.com/dev-summit/faq">website</a> throughout the event. Sessions will be recorded
-      and available after the event on the
-      <a href="http://www.youtube.com/user/androiddevelopers">Android Developers YouTube Channel</a>.</p>
+      keynote and all sessions on the app throughout the event. Sessions will be recorded
+      and made available after the event.</p>
     ]]></string>
     <string name="bike_description">This is complimentary for attendees and will be available outside of the venue during event hours. Parking will be on a first-come, first-served basis.</string>
-    <string name="parking_description">Free parking will be available to attendees. Please park in Parking Structure A (PSA) located at 1150 Bordeaux Drive. If that is at capacity, additional parking is at Parking Structure C (PSC) located at 1200 Bordeaux Drive. Attendees can then walk to the MP7 venue by following the signage and talking to brand ambassadors.</string>
+    <string name="parking_description">Free parking will be available to attendees at the venue on a first-come, first-served basis. Please follow the signage and ask the registration staff for directions when you check in.</string>
     <string name="lost_found_description">For any lost and found, please report to the help desk near registration where any items handed in will be kept safely.</string>
     <string name="faq_meals_description">Attendees are offered complimentary breakfast, lunch, and snacks each day of the event.</string>
     <string name="mothers_room_description">There will be a mothers room and a multifaith contemplation room available on site throughout the event. Also, there will be a family lounge where families can sit together to watch the livestream. Please ask the registration staff for information when you check in.</string>
     <string name="event_conduct_description"><![CDATA[
-    <p>Please review our <a href="https://developer.android.com/dev-summit/community-guidelines/">Community Guidelines</a>
-    to ensure that Android Dev Summit 2019 is a harassment-free and inclusive event experience for everyone.</p>
+    <p>Droidcon Uganda is dedicated to providing a harassment-free and inclusive event experience for everyone. Please be respectful of fellow attendees, speakers, and staff at all times.</p>
     ]]></string>
-    <string name="childcare_description">We do not offer childcare on site. However, we’re excited to offer child-care reimbursement for Android Dev Summit 2019! Children ages 12 years or younger are eligible. Please email us at android-dev-summit@google.com by October 18. Due to limited availability, we might not be able to assist with all requests. To receive reimbursement, a completed W9, final invoice for reimbursement with supporting receipts must be submitted no later than November 22.</string>
+    <string name="childcare_description">We do not offer childcare on site. Please contact the event organizers for more information about family-friendly options during the conference.</string>
     <string name="wifi_header" translation_description="Header label for wifi information.">Wifi</string>
     <string name="related_apps_header" translation_description="Header label for related apps.">Related Apps</string>
     <string name="event_types_header" translation_description="Header label for information on the different event types.">Event Types</string>
@@ -303,7 +299,7 @@
     <string name="settings_theme_dark" translation_description="Theme option to use the dark theme">Dark</string>
     <string name="settings_theme_battery" translation_description="Theme option to use which is set by the device Battery Saver feature being enabled">Set by Battery Saver</string>
 
-    <string name="faq_label" translation_description="Label for link to FAQ on website.">Android Dev Summit website</string>
+    <string name="faq_label" translation_description="Label for link to FAQ on website.">Droidcon Uganda website</string>
     <string name="built_with_material_components" translation_description="The app was built with Material Components.">Built with Material Components.</string>
     <string name="tap_to_join_network" translation_description="Tap to join Wifi network.">(tap to join network)</string>
 

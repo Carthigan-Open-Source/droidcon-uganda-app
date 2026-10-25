@@ -32,7 +32,7 @@
 # Databinding CardViewBindingAdapter
 -dontwarn androidx.cardview.widget.CardView
 
--keep class com.google.samples.apps.iosched.model.** {
+-keep class com.carthigan.droidconuganda.model.** {
     *;
 }
 

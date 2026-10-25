@@ -24,10 +24,10 @@
 
         <variable
             name="viewModel"
-            type="com.google.samples.apps.iosched.ui.sessiondetail.SessionDetailViewModel" />
+            type="com.carthigan.droidconuganda.ui.sessiondetail.SessionDetailViewModel" />
     </data>
 
-    <com.google.samples.apps.iosched.widget.InsetDispatchingCoordinatorLayout
+    <com.carthigan.droidconuganda.widget.InsetDispatchingCoordinatorLayout
         android:id="@+id/coordinator_layout_session_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -178,7 +178,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layoutManager="LinearLayoutManager" />
 
-        <com.google.samples.apps.iosched.widget.CheckableFab
+        <com.carthigan.droidconuganda.widget.CheckableFab
             android:id="@+id/session_detail_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -198,7 +198,7 @@
 
         <!-- A custom snackbar implementation for more control over positioning i.e. above the FAB,
              and to control its entry/exit animation. -->
-        <com.google.samples.apps.iosched.widget.FadingSnackbar
+        <com.carthigan.droidconuganda.widget.FadingSnackbar
             android:id="@+id/snackbar"
             android:layout_width="@dimen/snackbar_width"
             android:layout_height="wrap_content"
@@ -207,6 +207,6 @@
             android:layout_marginEnd="@dimen/snackbar_margin_end_fab"
             android:visibility="gone" />
 
-    </com.google.samples.apps.iosched.widget.InsetDispatchingCoordinatorLayout>
+    </com.carthigan.droidconuganda.widget.InsetDispatchingCoordinatorLayout>
 
 </layout>

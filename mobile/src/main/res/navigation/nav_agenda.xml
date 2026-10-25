@@ -22,6 +22,6 @@
 
     <fragment
         android:id="@+id/agendaFragment"
-        android:name="com.google.samples.apps.iosched.ui.agenda.AgendaFragment"
+        android:name="com.carthigan.droidconuganda.ui.agenda.AgendaFragment"
         android:label="@string/title_agenda" />
 </navigation>

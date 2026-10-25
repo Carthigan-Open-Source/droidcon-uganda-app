@@ -23,10 +23,10 @@
 
         <variable
             name="viewModel"
-            type="com.google.samples.apps.iosched.ui.info.EventInfoViewModel" />
+            type="com.carthigan.droidconuganda.ui.info.EventInfoViewModel" />
     </data>
 
-    <com.google.samples.apps.iosched.widget.InsetDispatchingCoordinatorLayout
+    <com.carthigan.droidconuganda.widget.InsetDispatchingCoordinatorLayout
         android:id="@+id/coordinator_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -144,7 +144,7 @@
                     app:layout_constraintStart_toStartOf="@+id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@+id/wifi_password_label" />
 
-                <com.google.samples.apps.iosched.widget.EventView
+                <com.carthigan.droidconuganda.widget.EventView
                     android:id="@+id/event_sessions"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -156,7 +156,7 @@
                     app:eventTitle="@string/event_sessions_title"
                     app:eventTypeLogo="@drawable/event_header_sessions" />
 
-                <com.google.samples.apps.iosched.widget.EventView
+                <com.carthigan.droidconuganda.widget.EventView
                     android:id="@+id/event_lightning"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -167,7 +167,7 @@
                     app:eventTitle="@string/event_lightning_title"
                     app:eventTypeLogo="@drawable/event_header_sandbox" />
 
-                <com.google.samples.apps.iosched.widget.EventView
+                <com.carthigan.droidconuganda.widget.EventView
                     android:id="@+id/event_codelabs"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -178,7 +178,7 @@
                     app:eventTitle="@string/event_codelabs_title"
                     app:eventTypeLogo="@drawable/event_header_codelabs" />
 
-                <com.google.samples.apps.iosched.widget.EventView
+                <com.carthigan.droidconuganda.widget.EventView
                     android:id="@+id/event_officehours"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -189,7 +189,7 @@
                     app:eventTitle="@string/event_officehours_title"
                     app:eventTypeLogo="@drawable/event_header_office_hours" />
 
-                <com.google.samples.apps.iosched.widget.EventView
+                <com.carthigan.droidconuganda.widget.EventView
                     android:id="@+id/event_fireside"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -200,7 +200,7 @@
                     app:eventTitle="@string/event_fireside_title"
                     app:eventTypeLogo="@drawable/event_header_afterhours" />
 
-                <com.google.samples.apps.iosched.widget.EventView
+                <com.carthigan.droidconuganda.widget.EventView
                     android:id="@+id/event_meals"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -215,6 +215,6 @@
 
         </androidx.core.widget.NestedScrollView>
 
-    </com.google.samples.apps.iosched.widget.InsetDispatchingCoordinatorLayout>
+    </com.carthigan.droidconuganda.widget.InsetDispatchingCoordinatorLayout>
 
 </layout>
