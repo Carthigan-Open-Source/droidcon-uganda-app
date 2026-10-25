@@ -58,7 +58,7 @@ ext {
     compileSdkVersion = 36
     // 24: required by Navigation 2.10 / Room 2.8 (Android 7.0+, 2016)
     minSdkVersion = 24
-    targetSdkVersion = 29
+    targetSdkVersion = 36
 
     // App dependencies. The 2019-era library versions are intentionally kept
     // so the existing sources keep compiling; only the versions the AGP 9

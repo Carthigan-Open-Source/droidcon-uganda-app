@@ -64,7 +64,7 @@ open class SessionAlarmManager @Inject constructor(val context: Context) {
         intent.putExtra(
             AlarmBroadcastReceiver.SESSION_ID_EXTRA, sessionId)
         return PendingIntent.getBroadcast(
-            context, sessionId.hashCode(), intent, FLAG_UPDATE_CURRENT
+            context, sessionId.hashCode(), intent, FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE
         )
     }
 
@@ -89,7 +89,9 @@ open class SessionAlarmManager @Inject constructor(val context: Context) {
             val intent = Intent(context, CancelNotificationBroadcastReceiver::class.java)
             intent.putExtra(
                 CancelNotificationBroadcastReceiver.NOTIFICATION_ID_EXTRA, notificationId)
-            val pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, 0)
+            val pendingIntent = PendingIntent.getBroadcast(
+                context, notificationId, intent, FLAG_IMMUTABLE
+            )
             val triggerAtMillis = Instant.now().plus(5, ChronoUnit.MINUTES).toEpochMilli()
             systemAlarmManager.set(RTC, triggerAtMillis, pendingIntent)
             Timber.d("Scheduled notification dismissal for $notificationId at $triggerAtMillis")

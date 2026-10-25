@@ -16,5 +16,5 @@
   -->
 
 <resources>
-    <color name="ic_launcher_background">@color/android_navy</color>
+    <color name="ic_launcher_background">@color/white</color>
 </resources>

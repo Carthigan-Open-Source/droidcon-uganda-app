@@ -16,9 +16,11 @@
 
 package com.carthigan.droidconuganda.ui.signin
 
+import android.Manifest
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.carthigan.droidconuganda.R
@@ -42,6 +44,15 @@ class NotificationsPreferenceDialogFragment : DaggerAppCompatDialogFragment() {
 
     private lateinit var viewModel: NotificationsPreferenceViewModel
 
+    /**
+     * From Android 13 (API 33) notifications require a runtime permission.
+     * Request it when the user opts in; the preference is saved regardless.
+     */
+    private val requestNotificationPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            // No follow-up needed: the preference drives whether alarms are scheduled.
+        }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         viewModel = viewModelProvider(viewModelFactory)
         viewModel.installAppEvent.observe(this, EventObserver {
@@ -64,7 +75,10 @@ class NotificationsPreferenceDialogFragment : DaggerAppCompatDialogFragment() {
                 .setTitle(R.string.notifications_preference_dialog_title)
                 .setMessage(R.string.notifications_preference_dialog_content)
                 .setNegativeButton(R.string.no) { _, _ -> viewModel.onNoClicked() }
-                .setPositiveButton(R.string.yes) { _, _ -> viewModel.onYesClicked() }
+                .setPositiveButton(R.string.yes) { _, _ ->
+                    requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    viewModel.onYesClicked()
+                }
                 .create()
         }
     }
