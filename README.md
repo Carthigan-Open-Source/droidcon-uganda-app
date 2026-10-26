@@ -18,6 +18,16 @@ The conference takes place on October 28-29, 2026 at the National ICT Innovation
 
 Bookmarks and preferences stay on the device. This fork does not require an account, Firebase configuration, or cloud bookmark sync. Conference updates and uncached speaker photos still need an internet connection. Reminders depend on the device's notification settings and permissions.
 
+## Screenshots
+
+| Schedule | Session details | My schedule |
+|:---:|:---:|:---:|
+| <img src="docs/images/screenshots/schedule.png" width="240" alt="Schedule with the Uganda map and live session ribbon" /> | <img src="docs/images/screenshots/session-detail.png" width="240" alt="Session details with time, room and abstract" /> | <img src="docs/images/screenshots/my-schedule.png" width="240" alt="Saved sessions in My schedule" /> |
+
+| Agenda | Venue and info |
+|:---:|:---:|
+| <img src="docs/images/screenshots/agenda.png" width="240" alt="Two-day agenda timeline" /> | <img src="docs/images/screenshots/info.png" width="240" alt="Venue, directions and conference information" /> |
+
 ## Getting started
 
 ### Requirements
