@@ -23,6 +23,7 @@ import androidx.lifecycle.viewModelScope
 import com.carthigan.droidconuganda.model.Block
 import com.carthigan.droidconuganda.shared.domain.agenda.LoadAgendaUseCase
 import com.carthigan.droidconuganda.shared.domain.settings.GetTimeZoneUseCase
+import com.carthigan.droidconuganda.shared.result.Result
 import com.carthigan.droidconuganda.shared.result.data
 import com.carthigan.droidconuganda.shared.util.TimeUtils
 import com.carthigan.droidconuganda.shared.util.map
@@ -37,6 +38,10 @@ class AgendaViewModel @Inject constructor(
 
     private val _agenda = MutableLiveData<List<Block>>()
     val agenda: LiveData<List<Block>> = _agenda
+    private val _isLoading = MutableLiveData(true)
+    val isLoading: LiveData<Boolean> = _isLoading
+    private val _loadFailed = MutableLiveData(false)
+    val loadFailed: LiveData<Boolean> = _loadFailed
 
     private val preferConferenceTimeZoneResult = MutableLiveData<Boolean>()
     val timeZoneId = preferConferenceTimeZoneResult.map { inConferenceTimeZone ->
@@ -50,17 +55,27 @@ class AgendaViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             refreshConferenceTimeZone()
-            _agenda.value = loadAgendaUseCase(false).data
+            loadAgenda(false)
         }
     }
 
     fun refreshAgenda() {
+        if (_isLoading.value == true) return
+        _isLoading.value = true
         // Agenda is lightweight and it's not possible to observe the changes with Remote Config,
         // we refresh the agenda on fragment start
         viewModelScope.launch {
             refreshConferenceTimeZone()
-            _agenda.value = loadAgendaUseCase(true).data
+            loadAgenda(true)
         }
+    }
+
+    private suspend fun loadAgenda(forceRefresh: Boolean) {
+        _isLoading.value = true
+        val result = loadAgendaUseCase(forceRefresh)
+        _loadFailed.value = result is Result.Error
+        result.data?.let { _agenda.value = it }
+        _isLoading.value = false
     }
 
     private suspend fun refreshConferenceTimeZone() {

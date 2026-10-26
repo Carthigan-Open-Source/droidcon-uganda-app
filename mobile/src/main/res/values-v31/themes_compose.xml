@@ -1,0 +1,7 @@
+<resources>
+    <style name="AppTheme.Launcher" parent="AppTheme.Compose">
+        <item name="android:windowBackground">@color/compose_window_background</item>
+        <item name="android:windowSplashScreenBackground">@color/compose_window_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+    </style>
+</resources>

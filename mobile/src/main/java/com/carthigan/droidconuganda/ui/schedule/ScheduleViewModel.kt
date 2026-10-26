@@ -97,6 +97,9 @@ class ScheduleViewModel @Inject constructor(
     private val loadSessionsResult = MutableLiveData<Result<LoadUserSessionsByDayUseCaseResult>>()
 
     val isLoading: LiveData<Boolean> = loadSessionsResult.map { it == Result.Loading }
+    val loadFailed: LiveData<Boolean> = loadSessionsResult.map { it is Result.Error }
+    private val _isRefreshing = MutableLiveData(false)
+    val isRefreshing: LiveData<Boolean> = _isRefreshing
 
     // The current UserSessionMatcher, used to filter the events that are shown
     private val userSessionMatcher = UserSessionMatcher()
@@ -336,8 +339,20 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun onSwipeRefresh() {
+        if (_isRefreshing.value == true) return
         viewModelScope.launch {
-            swipeRefreshResult.value = refreshConferenceDataUseCase(Any())
+            _isRefreshing.value = true
+            try {
+                val result = refreshConferenceDataUseCase(Any())
+                swipeRefreshResult.value = result
+                if (result is Result.Error) {
+                    _snackBarMessage.value = Event(SnackbarMessage(R.string.ui_schedule_error_body,
+                        longDuration = true))
+                }
+                refreshUserSessions()
+            } finally {
+                _isRefreshing.value = false
+            }
         }
     }
 

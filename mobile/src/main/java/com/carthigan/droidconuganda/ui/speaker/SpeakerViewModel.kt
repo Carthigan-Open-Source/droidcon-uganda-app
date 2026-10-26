@@ -29,6 +29,7 @@ import com.carthigan.droidconuganda.shared.analytics.AnalyticsHelper
 import com.carthigan.droidconuganda.shared.domain.sessions.LoadUserSessionsUseCase
 import com.carthigan.droidconuganda.shared.domain.speakers.LoadSpeakerUseCase
 import com.carthigan.droidconuganda.shared.domain.speakers.LoadSpeakerUseCaseResult
+import com.carthigan.droidconuganda.shared.result.Result
 import com.carthigan.droidconuganda.shared.result.data
 import com.carthigan.droidconuganda.shared.result.updateOnSuccess
 import com.carthigan.droidconuganda.shared.util.map
@@ -62,6 +63,8 @@ class SpeakerViewModel @Inject constructor(
     private val _speaker = MediatorLiveData<Speaker>()
     val speaker: LiveData<Speaker>
         get() = _speaker
+    private val _loadFailed = MutableLiveData(false)
+    val loadFailed: LiveData<Boolean> = _loadFailed
 
     private val _speakerUserSessions = MediatorLiveData<List<UserSession>>()
     val speakerUserSessions: LiveData<List<UserSession>>
@@ -126,7 +129,10 @@ class SpeakerViewModel @Inject constructor(
             return
         }
         viewModelScope.launch {
-            loadSpeakerUseCase(id).updateOnSuccess(loadSpeakerUseCaseResult)
+            _loadFailed.value = false
+            val result = loadSpeakerUseCase(id)
+            _loadFailed.value = result is Result.Error
+            result.updateOnSuccess(loadSpeakerUseCaseResult)
         }
     }
 }

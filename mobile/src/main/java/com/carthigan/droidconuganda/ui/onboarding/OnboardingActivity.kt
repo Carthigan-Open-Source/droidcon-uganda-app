@@ -16,39 +16,38 @@
 
 package com.carthigan.droidconuganda.ui.onboarding
 
-import android.R.interpolator
+import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.AnimatedVectorDrawable
+import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.view.animation.AnimationUtils
-import androidx.core.view.doOnNextLayout
-import androidx.core.view.postDelayed
-import androidx.databinding.DataBindingUtil
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModelProvider
-import com.carthigan.droidconuganda.R
-import com.carthigan.droidconuganda.databinding.ActivityOnboardingBinding
+import com.carthigan.droidconuganda.model.Theme
 import com.carthigan.droidconuganda.shared.result.EventObserver
 import com.carthigan.droidconuganda.shared.util.viewModelProvider
 import com.carthigan.droidconuganda.ui.MainActivity
+import com.carthigan.droidconuganda.ui.ThemedActivityDelegate
+import com.carthigan.droidconuganda.ui.compose.OnboardingScreen
+import com.carthigan.droidconuganda.ui.compose.theme.DroidconTheme
+import com.carthigan.droidconuganda.util.observeTheme
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
 
 class OnboardingActivity : DaggerAppCompatActivity() {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var themedActivityDelegate: ThemedActivityDelegate
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val onboardingViewModel: OnboardingViewModel = viewModelProvider(viewModelFactory)
-
-        val binding = DataBindingUtil.setContentView<ActivityOnboardingBinding>(
-            this, R.layout.activity_onboarding
-        ).apply {
-            viewModel = onboardingViewModel
-            setLifecycleOwner(this@OnboardingActivity)
-        }
 
         onboardingViewModel.navigateToMainActivity.observe(this, EventObserver {
             this.run {
@@ -57,41 +56,19 @@ class OnboardingActivity : DaggerAppCompatActivity() {
             }
         })
 
-        setImmersiveMode()
-
-        setupTransition(binding)
-    }
-
-    private fun setImmersiveMode() {
-        // immersive mode so images can draw behind the status bar
-        val decor = window.decorView
-        val flags = decor.systemUiVisibility or
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        decor.systemUiVisibility = flags
-    }
-
-    private fun setupTransition(binding: ActivityOnboardingBinding) {
-        // Transition the logo animation (roughly) from the preview window background.
-        binding.logo.apply {
-            val interpolator =
-                AnimationUtils.loadInterpolator(context, interpolator.linear_out_slow_in)
-            alpha = 0.4f
-            scaleX = 0.8f
-            scaleY = 0.8f
-            doOnNextLayout {
-                translationY = height / 3f
-                animate()
-                    .alpha(1f)
-                    .translationY(0f)
-                    .scaleX(1f)
-                    .scaleY(1f)
-                    .setInterpolator(interpolator)
-                    .withEndAction {
-                        postDelayed(1000) {
-                            (binding.logo.drawable as AnimatedVectorDrawable).start()
-                        }
-                    }
+        observeTheme(themedActivityDelegate.theme)
+        enableEdgeToEdge()
+        if (Build.VERSION.SDK_INT >= 29) window.isNavigationBarContrastEnforced = false
+        val appearance = getSharedPreferences("ui_appearance", Context.MODE_PRIVATE)
+        initializeViewTreeOwners()
+        setContent {
+            val theme by themedActivityDelegate.theme.observeAsState(Theme.SYSTEM)
+            var starting by remember { mutableStateOf(false) }
+            DroidconTheme(theme, appearance.getBoolean("wallpaper_colors", false)) {
+                OnboardingScreen(starting = starting, onStart = {
+                    starting = true
+                    onboardingViewModel.getStartedClick()
+                })
             }
         }
     }

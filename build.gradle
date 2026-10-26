@@ -35,6 +35,7 @@ buildscript {
         // Kotlin (older KSP registers generated sources via the now
         // disallowed kotlin.sourceSets DSL).
         classpath "com.google.devtools.ksp:symbol-processing-gradle-plugin:2.3.12"
+        classpath "org.jetbrains.kotlin:compose-compiler-gradle-plugin:2.2.10"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -55,7 +56,8 @@ ext {
     versionCodeMobile = versionCodeBase + 3 // Leave some space for future-proofing
 
     // SDK and tools
-    compileSdkVersion = 36
+    // Navigation 2.10.2's AAR metadata requires API 37; target behavior remains API 36.
+    compileSdkVersion = 37
     // 24: required by Navigation 2.10 / Room 2.8 (Android 7.0+, 2016)
     minSdkVersion = 24
     targetSdkVersion = 36
@@ -85,6 +87,11 @@ ext {
     ktxVersion = "1.0.0"
     lifecycleVersion = '2.2.0-alpha03'
     materialVersion = '1.1.0-alpha09'
+    composeBomVersion = '2026.06.01'
+    // Expressive APIs are public in this release, but internal in Material 3 1.4 stable.
+    composeMaterial3Version = '1.5.0-alpha01'
+    composeLifecycleVersion = '2.9.4'
+    activityComposeVersion = '1.10.1'
     mockitoVersion = "2.8.9"
     mockitoKotlinVersion = "1.5.0"
     // Bumped from 2.1.0-rc01: the safe-args Gradle plugin must be compatible

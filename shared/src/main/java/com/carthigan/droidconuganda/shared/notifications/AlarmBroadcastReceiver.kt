@@ -20,7 +20,6 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
@@ -168,14 +167,15 @@ class AlarmBroadcastReceiver : DaggerBroadcastReceiver() {
             ACTION_VIEW,
             "adssched://sessions/${session.id}".toUri()
         )
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.setPackage(context.packageName)
+        intent.component = intent.resolveActivity(context.packageManager)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
 
-        // Create the TaskStackBuilder
-        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(context)
-            // Add the intent, which inflates the back stack
-            .addNextIntentWithParentStack(intent)
-            // Get the PendingIntent containing the entire back stack
-            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+        // Compose owns the in-activity back stack; TaskStackBuilder would clear that task.
+        val resultPendingIntent = if (intent.component != null) PendingIntent.getActivity(
+            context, session.id.hashCode(), intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        ) else null
 
         val notification = NotificationCompat.Builder(context, ALARM_BROADCAST_CHANNEL_ID)
             .setContentTitle(session.title)

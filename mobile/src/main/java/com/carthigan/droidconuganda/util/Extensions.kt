@@ -32,6 +32,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.carthigan.droidconuganda.model.Theme
 import dagger.android.support.DaggerFragment
 import kotlinx.coroutines.Job
@@ -224,6 +227,15 @@ data class ViewDimensions(
     val start: Int = 0,
     val end: Int = 0
 )
+
+fun LifecycleOwner.observeTheme(theme: LiveData<Theme>) {
+    // Callable-reference observers compare equal across owners of the shared theme LiveData.
+    theme.observe(this, object : Observer<Theme> {
+        override fun onChanged(value: Theme) {
+            updateForTheme(value)
+        }
+    })
+}
 
 @SuppressLint("WrongConstant") // Suppressing warning on MODE_NIGHT_AUTO_BATTERY. b/128789886
 fun updateForTheme(theme: Theme) = when (theme) {

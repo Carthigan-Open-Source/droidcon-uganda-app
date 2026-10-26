@@ -51,7 +51,9 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/AppTheme.Compose" >
 
             <!-- Added to handle deep links -->
             <nav-graph android:value="@navigation/nav_schedule" />

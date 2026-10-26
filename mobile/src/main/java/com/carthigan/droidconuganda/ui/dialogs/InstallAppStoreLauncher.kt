@@ -17,8 +17,8 @@
 package com.carthigan.droidconuganda.ui.dialogs
 
 import android.content.Intent
-import android.net.Uri
 import androidx.fragment.app.FragmentActivity
+import com.carthigan.droidconuganda.ui.MainActivity
 import com.google.android.instantapps.InstantApps
 import javax.inject.Inject
 
@@ -31,10 +31,7 @@ class InstallAppStoreLauncher @Inject constructor() {
         /**
          * Intent to launch after the app has been installed.
          */
-        val postInstallIntent = Intent(
-            Intent.ACTION_VIEW,
-            Uri.parse("https://developer.android.com/dev-summit")
-        ).addCategory(Intent.CATEGORY_BROWSABLE)
+        val postInstallIntent = Intent(activity, MainActivity::class.java)
 
         InstantApps.showInstallPrompt(
             activity,

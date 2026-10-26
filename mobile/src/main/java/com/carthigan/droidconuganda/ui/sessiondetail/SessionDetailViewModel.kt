@@ -106,6 +106,8 @@ class SessionDetailViewModel @Inject constructor(
     private val _session = MediatorLiveData<Session>()
     val session: LiveData<Session>
         get() = _session
+    private val _loadFailed = MutableLiveData(false)
+    val loadFailed: LiveData<Boolean> = _loadFailed
 
     private val _userEvent = MediatorLiveData<UserEvent>()
     val userEvent: LiveData<UserEvent>
@@ -291,14 +293,20 @@ class SessionDetailViewModel @Inject constructor(
         }
     }
 
+    fun retry() {
+        refreshUserSession()
+    }
+
     private fun listenForUserSessionChanges(sessionId: SessionId) {
         // Cancels listening for the old session
         loadUserSessionJob.cancelIfActive()
 
         loadUserSessionJob = viewModelScope.launch {
+            _loadFailed.value = false
             // Fech the time zone in case it's the cause of the data refresh.
             fetchTimeZone()
             loadUserSessionUseCase(getUserId() to sessionId).collect { loadResult ->
+                _loadFailed.value = loadResult is Result.Error
                 // If there's a new result with data, update the session
                 loadResult.data?.userSession?.session?.let { session ->
                     _session.value = session

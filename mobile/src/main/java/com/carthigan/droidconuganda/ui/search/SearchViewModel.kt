@@ -35,6 +35,7 @@ import com.carthigan.droidconuganda.shared.result.Result
 import com.carthigan.droidconuganda.shared.result.successOr
 import com.carthigan.droidconuganda.ui.search.SearchResultType.SESSION
 import com.carthigan.droidconuganda.ui.search.SearchResultType.SPEAKER
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -62,6 +63,12 @@ class SearchViewModel @Inject constructor(
 
     private val _isEmpty = MediatorLiveData<Boolean>()
     val isEmpty: LiveData<Boolean> = _isEmpty
+    private var searchJob: Job? = null
+    private var searchGeneration = 0
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> = _isLoading
+    private val _loadFailed = MutableLiveData(false)
+    val loadFailed: LiveData<Boolean> = _loadFailed
 
     override fun openSearchResult(searchResult: SearchResult) {
         when (searchResult.type) {
@@ -81,24 +88,32 @@ class SearchViewModel @Inject constructor(
     }
 
     fun onSearchQueryChanged(newQuery: String) {
-        if (newQuery.length < 2) {
+        val generation = ++searchGeneration
+        searchJob?.cancel()
+        if (newQuery.trim().length < 2) {
             onQueryCleared()
             return
         }
         analyticsHelper.logUiEvent("Query: $newQuery", AnalyticsActions.SEARCH_QUERY_SUBMIT)
-        executeSearch(newQuery)
+        executeSearch(newQuery, generation)
     }
 
-    private fun executeSearch(query: String) {
-        if (searchUsingRoomFeatureEnabled) {
-            Timber.d("Searching for query using Room: $query")
-            viewModelScope.launch {
-                processSearchResult(loadDbSearchResultsUseCase(query.trim()))
-            }
-        } else {
-            Timber.d("Searching for query without using Room: $query")
-            viewModelScope.launch {
-                processSearchResult(loadSearchResultsUseCase(query))
+    private fun executeSearch(query: String, generation: Int) {
+        _isLoading.value = true
+        _loadFailed.value = false
+        searchJob = viewModelScope.launch {
+            try {
+                val result = if (searchUsingRoomFeatureEnabled) {
+                    loadDbSearchResultsUseCase(query.trim())
+                } else {
+                    loadSearchResultsUseCase(query.trim())
+                }
+                if (generation == searchGeneration) {
+                    _loadFailed.value = result is Result.Error
+                    processSearchResult(result)
+                }
+            } finally {
+                if (generation == searchGeneration) _isLoading.value = false
             }
         }
     }
@@ -132,6 +147,8 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun onQueryCleared() {
+        _isLoading.value = false
+        _loadFailed.value = false
         _searchResults.value = emptyList()
         // Explicitly set false to not show the "No results" state
         _isEmpty.value = false

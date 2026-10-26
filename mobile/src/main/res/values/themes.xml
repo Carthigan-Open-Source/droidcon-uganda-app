@@ -51,11 +51,17 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.Launcher" parent="AppTheme.NoActionBar">
-        <item name="android:windowBackground">@drawable/preview_window</item>
+    <style name="AppTheme.Compose" parent="AppTheme.NoActionBar">
+        <item name="android:windowBackground">@color/compose_window_background</item>
+        <item name="colorPrimary">@color/compose_window_ink</item>
+        <item name="colorSecondary">@color/compose_window_ink</item>
     </style>
 
-    <style name="AppTheme.Onboarding" parent="AppTheme.NoActionBar">
+    <style name="AppTheme.Launcher" parent="AppTheme.Compose">
+        <item name="android:windowBackground">@color/compose_window_background</item>
+    </style>
+
+    <style name="AppTheme.Onboarding" parent="AppTheme.Compose">
         <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
