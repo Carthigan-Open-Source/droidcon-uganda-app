@@ -54,6 +54,16 @@ The workflow at [`.github/workflows/android-release.yml`](.github/workflows/andr
 
 The published APK is signed with the development keystore. Configure your own release signing before distributing through an app store.
 
+The same workflow has an optional **Publish signed AAB to Google Play** job. It builds a signed release bundle for `com.carthigan.droidconuganda` and uploads to the selected track, using `draft` status by default. Configure these repository secrets before running it:
+
+- `ANDROID_KEYSTORE_BASE64`
+- `ANDROID_KEYSTORE_PASSWORD`
+- `ANDROID_KEY_ALIAS`
+- `ANDROID_KEY_PASSWORD`
+- `PLAY_SERVICE_ACCOUNT_JSON`
+
+The Play Console app must already exist, and Google Play requires a first release to be uploaded manually before API uploads work. The workflow derives a monotonic version code by default; supply `version_code` on a manual run if the next Play version code needs a different value.
+
 ### Tests
 
 Run the mobile unit tests:

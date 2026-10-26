@@ -35,10 +35,31 @@ android {
         minSdk rootProject.minSdkVersion
         targetSdk rootProject.targetSdkVersion
         versionName rootProject.versionName
-        versionCode rootProject.versionCodeMobile
+        versionCode = (findProperty("versionCode") ?: rootProject.versionCodeMobile).toString().toInt()
         testInstrumentationRunner "com.carthigan.droidconuganda.tests.CustomTestRunner"
 
         vectorDrawables.useSupportLibrary true
+    }
+
+    signingConfigs {
+        // Debug builds use the checked-in development key.
+        debug {
+            storeFile file("../debug.keystore")
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+            storePassword "android"
+        }
+        // CI populates this from GitHub Secrets. Local release builds stay unsigned
+        // unless the same environment variables are present.
+        release {
+            def keystorePath = System.getenv("ANDROID_KEYSTORE_PATH")
+            if (keystorePath) {
+                storeFile file(keystorePath)
+                storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("ANDROID_KEY_ALIAS")
+                keyPassword System.getenv("ANDROID_KEY_PASSWORD")
+            }
+        }
     }
 
     buildTypes {
@@ -47,6 +68,9 @@ android {
             shrinkResources true
             // AGP 9 only supports the optimized default ProGuard file.
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (System.getenv("ANDROID_KEYSTORE_PATH")) {
+                signingConfig signingConfigs.release
+            }
         }
         debug {
         }
@@ -70,16 +94,6 @@ android {
         // Compose ViewModel helpers use JVM 11; AGP 9 also derives Kotlin's target from this.
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
-    }
-
-    signingConfigs {
-        // We need to sign debug builds with a debug key to make firebase auth happy
-        debug {
-            storeFile file("../debug.keystore")
-            keyAlias "androiddebugkey"
-            keyPassword "android"
-            storePassword "android"
-        }
     }
 
     // debug and release variants share the same source dir
