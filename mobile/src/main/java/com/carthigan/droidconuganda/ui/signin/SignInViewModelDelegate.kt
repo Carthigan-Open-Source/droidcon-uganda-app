@@ -125,7 +125,7 @@ internal class FirebaseSignInViewModelDelegate @Inject constructor(
 
     private var authenticatedUserInfo: AuthenticatedUserInfo? = null
 
-    private val notificationsPrefIsShown = MutableLiveData<Result<Boolean>>()
+    private val notificationsPrefIsShown = MutableLiveData<Result<Boolean>?>()
 
     init {
         currentFirebaseUser = observeUserAuthStateUseCase(Any()).map {
