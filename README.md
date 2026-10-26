@@ -62,7 +62,9 @@ The same workflow has an optional **Publish signed AAB to Google Play** job. It 
 - `ANDROID_KEY_PASSWORD`
 - `PLAY_SERVICE_ACCOUNT_JSON`
 
-The Play Console app must already exist, and Google Play requires a first release to be uploaded manually before API uploads work. The workflow derives a monotonic version code by default; supply `version_code` on a manual run if the next Play version code needs a different value.
+The Play Console app must already exist, and Google Play requires a first release to be uploaded manually before API uploads work. To build the signed bundle without uploading, set `play_upload` to false and download the `play-bundle-<run>` artifact. The workflow derives a monotonic version code by default; supply `version_code` on a manual run if the next Play version code needs a different value.
+
+Keep the upload keystore and its passwords out of the repository. Losing the upload key requires an upload-key reset in Play Console.
 
 ### Tests
 
