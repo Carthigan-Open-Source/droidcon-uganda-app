@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -31,6 +32,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,6 +45,7 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.carthigan.droidconuganda.R
 import com.carthigan.droidconuganda.model.ConferenceDay
 import com.carthigan.droidconuganda.model.userdata.UserSession
@@ -54,8 +57,12 @@ import com.carthigan.droidconuganda.ui.compose.components.ConferenceIcon
 import com.carthigan.droidconuganda.ui.compose.components.ConferenceMessage
 import com.carthigan.droidconuganda.ui.compose.components.SelectionPill
 import com.carthigan.droidconuganda.ui.compose.components.SessionCard
+import com.carthigan.droidconuganda.ui.compose.components.UgandaMap
 import com.carthigan.droidconuganda.ui.schedule.ScheduleViewModel
 import com.carthigan.droidconuganda.ui.schedule.filters.EventFilter
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import org.threeten.bp.ZoneId
 import java.util.Locale
 
@@ -74,6 +81,21 @@ fun ScheduleRoute(viewModel: ScheduleViewModel, onSession: (String) -> Unit,
     val failed by viewModel.loadFailed.observeAsState(false)
     val zone by viewModel.timeZoneId.observeAsState(TimeUtils.CONFERENCE_TIMEZONE)
     val currentEvent by viewModel.currentEvent.observeAsState()
+    var liveSessionId by remember(dayData?.list) {
+        mutableStateOf(firstLiveSession(dayData?.list.orEmpty(), viewModel.currentTime())?.session?.id)
+    }
+    val liveScope = rememberCoroutineScope()
+    LifecycleResumeEffect(dayData?.list) {
+        val ticker = liveScope.launch {
+            while (isActive) {
+                val sessions = dayData?.list.orEmpty()
+                val now = viewModel.currentTime()
+                liveSessionId = firstLiveSession(sessions, now)?.session?.id
+                delay(millisUntilNextSessionBoundary(sessions, now))
+            }
+        }
+        onPauseOrDispose { ticker.cancel() }
+    }
     LaunchedEffect(currentEvent) {
         if (!viewModel.userHasInteracted) currentEvent?.let {
             selectedDay = it.day.coerceIn(days.indices)
@@ -91,7 +113,8 @@ fun ScheduleRoute(viewModel: ScheduleViewModel, onSession: (String) -> Unit,
         onStar = viewModel::onStarClicked, onSearch = onSearch, onRefresh = viewModel::onSwipeRefresh,
         onFilter = { viewModel.toggleFilter(it, !it.isSelected) }, onClearFilters = viewModel::clearFilters,
         scrollToSessionIndex = scrollRequest?.takeIf { it.day == selectedDay }?.sessionIndex,
-        onScrollHandled = { scrollRequest = null }
+        onScrollHandled = { scrollRequest = null },
+        liveSessionId = liveSessionId
     )
 }
 
@@ -104,7 +127,8 @@ fun ScheduleScreen(
     onSearch: () -> Unit, onRefresh: () -> Unit, onFilter: (EventFilter) -> Unit,
     onClearFilters: () -> Unit,
     scrollToSessionIndex: Int? = null,
-    onScrollHandled: () -> Unit = {}
+    onScrollHandled: () -> Unit = {},
+    liveSessionId: String? = null
 ) {
     var showFilters by rememberSaveable { mutableStateOf(false) }
     val pinnedFilter = filters.filterIsInstance<EventFilter.MyEventsFilter>().firstOrNull()
@@ -190,7 +214,8 @@ fun ScheduleScreen(
             }
             else -> items(sessions, key = { it.session.id }) { userSession ->
                 SessionCard(userSession, zone, onClick = { onSession(userSession.session.id) },
-                    onStar = { onStar(userSession) }, modifier = Modifier.padding(horizontal = 16.dp))
+                    onStar = { onStar(userSession) }, modifier = Modifier.padding(horizontal = 16.dp),
+                    isHappeningNow = userSession.session.id == liveSessionId)
             }
         }
     }
@@ -245,8 +270,28 @@ private fun ScheduleDateHeader(day: ConferenceDay, zone: ZoneId) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-        if (stacked) Column(verticalArrangement = Arrangement.spacedBy(16.dp)) { date(); location() }
+        val map: @Composable () -> Unit = {
+            UgandaMap(
+                modifier = Modifier.size(if (stacked) 64.dp else 112.dp)
+                    .testTag("schedule_uganda_map")
+            )
+        }
+        if (stacked) Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            date()
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically) {
+                map()
+                Column(Modifier.weight(1f)) { location() }
+            }
+        }
         else Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Bottom) { date(); location() }
+            verticalAlignment = Alignment.Bottom) {
+            date()
+            Column(horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                map()
+                location()
+            }
+        }
     }
 }

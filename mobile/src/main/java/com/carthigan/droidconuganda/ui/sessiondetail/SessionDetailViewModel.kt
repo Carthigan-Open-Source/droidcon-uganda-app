@@ -73,7 +73,7 @@ class SessionDetailViewModel @Inject constructor(
     private val starEventUseCase: StarEventAndNotifyUseCase,
     observeConferenceDataUseCase: ObserveConferenceDataUseCase,
     private val getTimeZoneUseCase: GetTimeZoneUseCase,
-    timeProvider: TimeProvider,
+    private val timeProvider: TimeProvider,
     private val analyticsHelper: AnalyticsHelper
 ) : ViewModel(), SessionDetailEventListener, EventActions,
     SignInViewModelDelegate by signInViewModelDelegate {
@@ -88,6 +88,8 @@ class SessionDetailViewModel @Inject constructor(
 
     private val _timeZoneId = MutableLiveData(ZoneId.systemDefault())
     val timeZoneId: LiveData<ZoneId> = _timeZoneId
+
+    fun currentTime(): ZonedDateTime = timeProvider.nowZoned()
 
     private val _errorMessage = MediatorLiveData<Event<String>>()
     val errorMessage: LiveData<Event<String>>

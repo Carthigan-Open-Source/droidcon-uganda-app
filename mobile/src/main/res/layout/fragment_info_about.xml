@@ -98,8 +98,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/margin_normal"
-                android:drawablePadding="@dimen/margin_small"
-                android:drawableStart="@drawable/ic_logo_components"
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/margin_normal"
                 android:text="@string/built_with_material_components"

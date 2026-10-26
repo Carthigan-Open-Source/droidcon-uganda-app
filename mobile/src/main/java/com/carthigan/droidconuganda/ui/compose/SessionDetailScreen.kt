@@ -1,6 +1,7 @@
 package com.carthigan.droidconuganda.ui.compose
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -24,13 +25,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.carthigan.droidconuganda.R
 import com.carthigan.droidconuganda.model.Session
 import com.carthigan.droidconuganda.shared.util.TimeUtils
@@ -39,10 +46,14 @@ import com.carthigan.droidconuganda.ui.compose.components.BackButton
 import com.carthigan.droidconuganda.ui.compose.components.ConferenceHtmlText
 import com.carthigan.droidconuganda.ui.compose.components.ConferenceIcon
 import com.carthigan.droidconuganda.ui.compose.components.ConferenceMessage
+import com.carthigan.droidconuganda.ui.compose.components.LiveSessionRibbon
 import com.carthigan.droidconuganda.ui.compose.components.SessionCard
 import com.carthigan.droidconuganda.ui.compose.components.SpeakerRow
 import com.carthigan.droidconuganda.ui.compose.components.sessionColors
 import com.carthigan.droidconuganda.ui.sessiondetail.SessionDetailViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -57,6 +68,23 @@ fun SessionDetailRoute(
     val related by viewModel.relatedUserSessions.observeAsState(emptyList())
     val zone by viewModel.timeZoneId.observeAsState(TimeUtils.CONFERENCE_TIMEZONE)
     val failed by viewModel.loadFailed.observeAsState(false)
+    val current = session
+    val liveDescription = stringResource(R.string.ui_happening_now)
+    var isLive by remember(current?.id) {
+        mutableStateOf(current?.let { isSessionLive(it, viewModel.currentTime()) } == true)
+    }
+    val liveScope = rememberCoroutineScope()
+    LifecycleResumeEffect(current?.id) {
+        val ticker = liveScope.launch {
+            while (isActive) {
+                val value = current ?: break
+                val now = viewModel.currentTime()
+                isLive = isSessionLive(value, now)
+                delay(millisUntilNextSessionBoundary(value, now))
+            }
+        }
+        onPauseOrDispose { ticker.cancel() }
+    }
     LaunchedEffect(sessionId) { viewModel.setSessionId(sessionId) }
     EventEffect(viewModel.snackBarMessage, onMessage)
     EventEffect(viewModel.navigateToYouTubeAction, onOpenUrl)
@@ -74,7 +102,6 @@ fun SessionDetailRoute(
                 }
             }
         }
-        val current = session
         if (current == null) {
             ConferenceMessage(
                 stringResource(if (failed) R.string.ui_details_unavailable else R.string.ui_loading),
@@ -88,23 +115,35 @@ fun SessionDetailRoute(
             verticalArrangement = Arrangement.spacedBy(24.dp)) {
             item {
                 val (container, content) = sessionColors(current)
-                Surface(color = container, contentColor = content, shape = RoundedCornerShape(36.dp)) {
-                    Column(Modifier.fillMaxWidth().padding(24.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
-                        Text(current.displayTags.joinToString(" · ") { it.displayName }
-                            .ifEmpty { current.type.displayName }, style = MaterialTheme.typography.labelLarge)
-                        Text(current.title, style = MaterialTheme.typography.headlineLarge,
-                            modifier = Modifier.semantics { heading() })
-                        Text(conferenceDate(current.startTime, zone, "EEEE, d MMMM"),
-                            style = MaterialTheme.typography.titleMedium)
-                        FlowRow(horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text("${conferenceTime(current.startTime, zone)} – ${conferenceTime(current.endTime, zone)}",
-                                style = MaterialTheme.typography.headlineSmall)
-                            Text(stringResource(R.string.ui_duration_minutes, current.duration / 60_000),
-                                style = MaterialTheme.typography.bodyLarge)
+                Box(Modifier.fillMaxWidth()) {
+                    Surface(
+                        modifier = Modifier.fillMaxWidth().semantics {
+                            if (isLive) stateDescription = liveDescription
+                        },
+                        color = container,
+                        contentColor = content,
+                        shape = RoundedCornerShape(36.dp)
+                    ) {
+                        Column(Modifier.fillMaxWidth().padding(24.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
+                            Text(current.displayTags.joinToString(" · ") { it.displayName }
+                                .ifEmpty { current.type.displayName }, style = MaterialTheme.typography.labelLarge)
+                            Text(current.title, style = MaterialTheme.typography.headlineLarge,
+                                modifier = Modifier.semantics { heading() })
+                            Text(conferenceDate(current.startTime, zone, "EEEE, d MMMM"),
+                                style = MaterialTheme.typography.titleMedium)
+                            FlowRow(horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Text("${conferenceTime(current.startTime, zone)} – ${conferenceTime(current.endTime, zone)}",
+                                    style = MaterialTheme.typography.headlineSmall)
+                                Text(stringResource(R.string.ui_duration_minutes, current.duration / 60_000),
+                                    style = MaterialTheme.typography.bodyLarge)
+                            }
+                            current.room?.let { Text(it.name, style = MaterialTheme.typography.titleMedium) }
+                            Text(zone.id, style = MaterialTheme.typography.bodyMedium)
                         }
-                        current.room?.let { Text(it.name, style = MaterialTheme.typography.titleMedium) }
-                        Text(zone.id, style = MaterialTheme.typography.bodyMedium)
+                    }
+                    if (isLive) {
+                        LiveSessionRibbon(Modifier.matchParentSize(), cornerRadius = 36.dp)
                     }
                 }
             }

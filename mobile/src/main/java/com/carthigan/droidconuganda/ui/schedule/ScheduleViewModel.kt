@@ -65,6 +65,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
@@ -136,9 +137,8 @@ class ScheduleViewModel @Inject constructor(
             // Session data observes the time zone and the repository.
             forEachIndexed { _, sessionTimeDataDay ->
                 sessionTimeDataDay.addSource(timeZoneId) {
-                    sessionTimeDataDay.value = sessionTimeDataDay.value?.apply {
-                        timeZoneId = it
-                    } ?: SessionTimeData(timeZoneId = it)
+                    sessionTimeDataDay.value = sessionTimeDataDay.value?.copy(timeZoneId = it)
+                        ?: SessionTimeData(timeZoneId = it)
                 }
             }
         }
@@ -204,6 +204,9 @@ class ScheduleViewModel @Inject constructor(
 
     // Flags used to disable the "scroll to now" feature
     var userHasInteracted = false
+
+    /** Current wall-clock time, using the same time source as the rest of the schedule. */
+    fun currentTime(): ZonedDateTime = timeProvider.nowZoned()
 
     // The currently happening event
     val currentEvent: LiveData<EventLocation?> = loadSessionsResult.switchMap {
@@ -334,7 +337,10 @@ class ScheduleViewModel @Inject constructor(
     private fun updateFilterStateObservables() {
         val hasAnyFilters = userSessionMatcher.hasAnyFilters()
         _hasAnyFilters.value = hasAnyFilters
-        _eventFilters.value = cachedEventFilters
+        // Publish new instances so Compose's observeAsState sees the change. The old
+        // implementation mutated the same list, which LiveData delivered but Compose
+        // deduplicated because the reference was unchanged.
+        _eventFilters.value = cachedEventFilters.toList()
         _selectedFilters.value = cachedEventFilters.filter { it.isSelected }
     }
 
@@ -400,9 +406,10 @@ class ScheduleViewModel @Inject constructor(
                     val userSessions =
                         it.data?.userSessionsPerDay?.get(getConferenceDaysUseCase()[index])
                             ?: return@forEachIndexed
-                    sessionTimeDataDay.value = sessionTimeDataDay.value?.apply {
-                        list = userSessions
-                    } ?: SessionTimeData(list = userSessions)
+                    // Emit a new snapshot; mutating the existing object leaves Compose
+                    // holding the same reference and therefore suppresses recomposition.
+                    sessionTimeDataDay.value = sessionTimeDataDay.value?.copy(list = userSessions)
+                        ?: SessionTimeData(list = userSessions)
                 }
             }
         }

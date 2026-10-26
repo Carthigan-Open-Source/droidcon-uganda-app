@@ -88,6 +88,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertThat
 import org.junit.Assert.assertTrue
@@ -168,6 +169,43 @@ class ScheduleViewModelTest {
             // Tags
             val loadedFilters = LiveDataTestUtil.getValue(viewModel.eventFilters)
             assertTrue(loadedFilters?.containsAll(MobileTestData.tagFiltersList) ?: false)
+        }
+    }
+
+    @Test
+    fun togglingMySchedulePublishesNewFilterAndSessionSnapshots() = coroutineRule.runTest {
+        val loadSessionsUseCase = LoadUserSessionsByDayUseCase(
+            DefaultSessionAndUserEventRepository(
+                TestUserEventDataSource(),
+                DefaultSessionRepository(TestDataRepository)
+            ),
+            prefs,
+            coroutineRule.testDispatcher
+        )
+        val loadTagsUseCase =
+            LoadEventFiltersUseCase(TagRepository(TestDataRepository), coroutineRule.testDispatcher)
+        val viewModel = createScheduleViewModel(
+            loadSessionsUseCase = loadSessionsUseCase,
+            loadTagsUseCase = loadTagsUseCase,
+            signInViewModelDelegate = viewModelDelegate
+        )
+        viewModelDelegate.loadUser("test")
+
+        viewModel.getSessionTimeDataForDay(0).observeForTesting {
+            val filtersBefore = LiveDataTestUtil.getValue(viewModel.eventFilters)!!
+            val sessionsBefore = LiveDataTestUtil.getValue(viewModel.getSessionTimeDataForDay(0))!!
+            val mySchedule = filtersBefore.filterIsInstance<EventFilter.MyEventsFilter>().single()
+
+            viewModel.toggleFilter(mySchedule, true)
+
+            val filtersAfter = LiveDataTestUtil.getValue(viewModel.eventFilters)!!
+            val sessionsAfter = LiveDataTestUtil.getValue(viewModel.getSessionTimeDataForDay(0))!!
+            assertNotSame(filtersBefore, filtersAfter)
+            assertNotSame(sessionsBefore, sessionsAfter)
+            assertTrue(
+                filtersAfter.filterIsInstance<EventFilter.MyEventsFilter>().single().isSelected
+            )
+            assertEquals(listOf(TestData.userSession1), sessionsAfter.list)
         }
     }
 

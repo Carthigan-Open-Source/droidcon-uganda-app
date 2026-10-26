@@ -55,7 +55,7 @@
             android:importantForAccessibility="no"
             android:padding="@dimen/onboarding_animation_padding"
             android:scaleType="fitCenter"
-            android:src="@drawable/avd_android_logo"
+            android:src="@drawable/droidcon_uganda_icon"
             app:layout_constraintBottom_toTopOf="@id/welcome"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
             app:layout_constraintStart_toStartOf="@id/guideline_start"

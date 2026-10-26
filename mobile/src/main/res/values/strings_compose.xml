@@ -6,6 +6,8 @@
     <string name="ui_my_schedule">My schedule</string>
     <string name="ui_your_day">Your day, your way.</string>
     <string name="ui_conference_location">Kampala, Uganda</string>
+    <string name="ui_uganda_map_description">Map of Uganda</string>
+    <string name="ui_happening_now">Happening now</string>
     <string name="ui_refresh">Refresh schedule</string>
     <string name="ui_retry">Retry</string>
     <string name="ui_loading_schedule">Loading the schedule</string>

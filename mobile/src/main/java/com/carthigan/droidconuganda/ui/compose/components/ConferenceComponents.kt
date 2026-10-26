@@ -39,6 +39,7 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -135,12 +136,17 @@ fun SessionCard(
     zone: ZoneId,
     onClick: () -> Unit,
     onStar: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isHappeningNow: Boolean = false
 ) {
     val session = userSession.session
     val (container, content) = sessionColors(session)
-    Surface(onClick = onClick, modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(28.dp), color = container, contentColor = content) {
+    val liveDescription = stringResource(R.string.ui_happening_now)
+    Box(modifier = modifier.fillMaxWidth()) {
+        Surface(onClick = onClick, modifier = Modifier.fillMaxWidth().semantics {
+                if (isHappeningNow) stateDescription = liveDescription
+            },
+            shape = RoundedCornerShape(28.dp), color = container, contentColor = content) {
         Column(Modifier.padding(start = 20.dp, end = 16.dp, top = 12.dp, bottom = 20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(session.displayTags.joinToString(" · ") { it.displayName }
@@ -175,6 +181,10 @@ fun SessionCard(
                     style = MaterialTheme.typography.bodyMedium)
                 session.room?.let { Text(it.name, style = MaterialTheme.typography.bodyMedium) }
             }
+        }
+        }
+        if (isHappeningNow) {
+            LiveSessionRibbon(Modifier.matchParentSize())
         }
     }
 }
