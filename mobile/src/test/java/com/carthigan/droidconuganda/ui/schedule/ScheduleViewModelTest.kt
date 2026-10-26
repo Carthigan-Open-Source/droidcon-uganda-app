@@ -206,6 +206,22 @@ class ScheduleViewModelTest {
                 filtersAfter.filterIsInstance<EventFilter.MyEventsFilter>().single().isSelected
             )
             assertEquals(listOf(TestData.userSession1), sessionsAfter.list)
+
+            val myScheduleSelected =
+                filtersAfter.filterIsInstance<EventFilter.MyEventsFilter>().single()
+            viewModel.toggleFilter(myScheduleSelected, false)
+
+            val filtersBack = LiveDataTestUtil.getValue(viewModel.eventFilters)!!
+            val sessionsBack = LiveDataTestUtil.getValue(viewModel.getSessionTimeDataForDay(0))!!
+            assertNotSame(filtersAfter, filtersBack)
+            assertNotSame(sessionsAfter, sessionsBack)
+            assertFalse(
+                filtersBack.filterIsInstance<EventFilter.MyEventsFilter>().single().isSelected
+            )
+            assertEquals(
+                TestData.userSessionMap[TestData.TestConferenceDays[0]],
+                sessionsBack.list
+            )
         }
     }
 

@@ -19,6 +19,7 @@ package com.carthigan.droidconuganda.ui.messages
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.carthigan.droidconuganda.R
 import com.carthigan.droidconuganda.androidtest.util.LiveDataTestUtil
+import com.carthigan.droidconuganda.shared.result.EventObserver
 import com.carthigan.droidconuganda.test.data.TestData
 import com.carthigan.droidconuganda.test.util.SyncTaskExecutorRule
 import com.carthigan.droidconuganda.test.util.fakes.FakePreferenceStorage
@@ -26,6 +27,7 @@ import com.carthigan.droidconuganda.ui.SnackbarMessage
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.core.Is.`is`
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertThat
 import org.junit.Before
@@ -98,6 +100,24 @@ class SnackbarMessageManagerTest {
         // All messages have been consumed
         result = LiveDataTestUtil.getValue(snackbarMessageManager.observeNextMessage())
         assertThat(result?.getContentIfNotHandled(), `is`(nullValue()))
+    }
+
+    @Test
+    fun consumingAllMessagesDoesNotEmitNullOrCrashEventObserver() {
+        val received = mutableListOf<SnackbarMessage>()
+        val liveData = snackbarMessageManager.observeNextMessage()
+        val observer = EventObserver<SnackbarMessage> { received.add(it) }
+        liveData.observeForever(observer)
+        try {
+            snackbarMessageManager.addMessage(msg1)
+            LiveDataTestUtil.getValue(liveData)?.getContentIfNotHandled()
+            snackbarMessageManager.loadNextMessage()
+
+            assertThat(received, `is`(equalTo(listOf(msg1))))
+            assertNotNull(liveData.value)
+        } finally {
+            liveData.removeObserver(observer)
+        }
     }
 
     @Test

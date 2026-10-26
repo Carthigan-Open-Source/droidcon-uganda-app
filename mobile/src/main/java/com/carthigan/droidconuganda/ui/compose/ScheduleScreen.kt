@@ -75,7 +75,8 @@ fun ScheduleRoute(viewModel: ScheduleViewModel, onSession: (String) -> Unit,
     val dayData by remember(viewModel, selectedDay) {
         viewModel.getSessionTimeDataForDay(selectedDay)
     }.observeAsState()
-    val filters by viewModel.eventFilters.observeAsState(emptyList())
+    // Filter identity stays stable while isSelected changes, so use reference equality here.
+    val filters by viewModel.eventFilters.observeAsStateReferential(emptyList<EventFilter>())
     val loading by viewModel.isLoading.observeAsState(true)
     val refreshing by viewModel.isRefreshing.observeAsState(false)
     val failed by viewModel.loadFailed.observeAsState(false)

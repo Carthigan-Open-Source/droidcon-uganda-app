@@ -294,8 +294,15 @@ class ScheduleViewModel @Inject constructor(
             }
         }
         if (changed) {
-            // Actually toggle the filter
-            val index = cachedEventFilters.indexOf(filter)
+            // Find the filter by identity, not by its selected state, so a rapid tap still
+            // resolves the cached entry correctly.
+            val index = cachedEventFilters.indexOfFirst { cached ->
+                when (filter) {
+                    is MyEventsFilter -> cached is MyEventsFilter
+                    is TagFilter -> cached is TagFilter && cached.tag == filter.tag
+                }
+            }
+            if (index == -1) return
             cachedEventFilters[index] = filter.copy(enabled)
             // Persist the filters
             viewModelScope.launch {

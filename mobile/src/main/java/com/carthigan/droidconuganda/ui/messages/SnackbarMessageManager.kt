@@ -81,7 +81,8 @@ open class SnackbarMessageManager @Inject constructor(
     }
 
     fun loadNextMessage() {
-        result.postValue(messages.firstOrNull { !it.hasBeenHandled })
+        val next = messages.firstOrNull { !it.hasBeenHandled } ?: return
+        result.postValue(next)
     }
 
     fun observeNextMessage(): MutableLiveData<Event<SnackbarMessage>> {
