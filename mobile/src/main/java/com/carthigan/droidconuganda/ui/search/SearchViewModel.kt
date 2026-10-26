@@ -21,7 +21,9 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.carthigan.droidconuganda.model.Session
 import com.carthigan.droidconuganda.model.SessionId
+import com.carthigan.droidconuganda.model.SessionType
 import com.carthigan.droidconuganda.model.SpeakerId
 import com.carthigan.droidconuganda.shared.analytics.AnalyticsActions
 import com.carthigan.droidconuganda.shared.analytics.AnalyticsHelper
@@ -126,7 +128,7 @@ class SearchViewModel @Inject constructor(
                     val session = searched.session
                     SearchResult(
                         session.title,
-                        session.type.displayName,
+                        sessionSearchSubtitle(session),
                         SESSION,
                         session.id
                     )
@@ -144,6 +146,14 @@ class SearchViewModel @Inject constructor(
         }
 
         _isEmpty.value = result.successOr(null).isNullOrEmpty()
+    }
+
+    private fun sessionSearchSubtitle(session: Session): String {
+        val speakers = session.speakers.joinToString(", ") { it.name }.trim()
+        if (speakers.isNotEmpty()) return speakers
+        val tagName = session.displayTags.firstOrNull()?.displayName.orEmpty()
+        if (tagName.isNotEmpty()) return tagName
+        return session.type.takeIf { it != SessionType.UNKNOWN }?.displayName.orEmpty()
     }
 
     private fun onQueryCleared() {

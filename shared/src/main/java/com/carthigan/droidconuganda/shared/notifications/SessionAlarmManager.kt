@@ -24,6 +24,7 @@ import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.core.content.getSystemService
 import com.carthigan.droidconuganda.model.Session
 import com.carthigan.droidconuganda.model.SessionId
@@ -78,10 +79,21 @@ open class SessionAlarmManager @Inject constructor(val context: Context) {
     }
 
     private fun scheduleAlarmFor(pendingIntent: PendingIntent, session: Session) {
-        systemAlarmManager?.let {
-            val triggerAtMillis = session.startTime.toEpochMilli() - alarmTimeDelta
-            systemAlarmManager.setExact(RTC_WAKEUP, triggerAtMillis, pendingIntent)
+        val alarmManager = systemAlarmManager ?: return
+        val triggerAtMillis = session.startTime.toEpochMilli() - alarmTimeDelta
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                !alarmManager.canScheduleExactAlarms()
+            ) {
+                // Reminders stay best-effort when the user has not allowed exact alarms.
+                alarmManager.setAndAllowWhileIdle(RTC_WAKEUP, triggerAtMillis, pendingIntent)
+            } else {
+                alarmManager.setExact(RTC_WAKEUP, triggerAtMillis, pendingIntent)
+            }
             Timber.d("Scheduled alarm for session ${session.title} at $triggerAtMillis")
+        } catch (ex: SecurityException) {
+            // A missing alarm must not turn a successful star into an error.
+            Timber.w(ex, "Could not schedule alarm for session ${session.title}")
         }
     }
 
