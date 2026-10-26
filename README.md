@@ -48,6 +48,12 @@ To assemble a debug APK from the command line:
 
 On Windows, use `gradlew.bat` instead of `./gradlew`. Use your own release signing configuration before publishing; the bundled debug keystore is for development.
 
+### Automated APK releases
+
+The workflow at [`.github/workflows/android-release.yml`](.github/workflows/android-release.yml) builds a debug APK on GitHub Actions. Pushing a `v*` tag creates a GitHub Release and attaches the APK. A manual workflow run uploads the APK as a workflow artifact and can publish a release when a tag is supplied.
+
+The published APK is signed with the development keystore. Configure your own release signing before distributing through an app store.
+
 ### Tests
 
 Run the mobile unit tests:
