@@ -35,7 +35,7 @@ android {
         minSdk rootProject.minSdkVersion
         targetSdk rootProject.targetSdkVersion
         versionName rootProject.versionName
-        versionCode = (findProperty("versionCode") ?: rootProject.versionCodeMobile).toString().toInt()
+        versionCode = (findProperty("versionCode") ?: rootProject.versionCodeMobile).toString().toInteger()
         testInstrumentationRunner "com.carthigan.droidconuganda.tests.CustomTestRunner"
 
         vectorDrawables.useSupportLibrary true
