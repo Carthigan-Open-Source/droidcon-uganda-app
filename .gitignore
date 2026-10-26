@@ -40,5 +40,6 @@ _sandbox
 # Android Studio captures folder
 captures/
 
-# Local design-session state
+# Local agent planning and design-session files
 .superpowers/
+/docs/superpowers/
